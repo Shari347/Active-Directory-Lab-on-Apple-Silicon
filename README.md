@@ -176,7 +176,40 @@ Once you find which is which, rename the external one to **Internet** and the in
 
 5. Click **OK**, then **Close**.
 
+## Step 4: Install Active Directory Domain Services (AD DS) and Create a Domain
 
+**Install the AD DS role**
+1. Open **Server Manager** (should auto-launch, or Start menu).
+2. Click **Manage** (top right) → **Add Roles and Features**.
+3. Click **Next** through "Before You Begin."
+4. Installation type: **Role-based or feature-based installation** → Next.
+5. Server selection: leave the local server selected → Next.
+6. Server roles: check **Active Directory Domain Services**.
+7. A popup will ask to add required features (like RSAT tools) — click **Add Features** → Next.
+8. Skip the Features page → Next.
+9. Skip the AD DS info page → Next.
+10. Confirm and click **Install**.
+11. Wait for it to finish (don't close the wizard, just let it run).
+
+**Promote the server to a domain controller**
+1. Once install finishes, click **"Promote this server to a domain controller"** (a link right in the results screen — or via the yellow flag notification icon at the top of Server Manager if you missed it).
+2. Deployment Configuration: select **Add a new forest**.
+3. Root domain name: type `mydomain.com` → Next.
+4. Domain Controller Options:
+   - Forest/Domain functional level: leave default (usually fine as Windows Server 2016 or higher)
+   - Ensure **DNS Server** is checked (it should be by default)
+   - Set a **Directory Services Restore Mode (DSRM) password** — write this down somewhere safe, it's separate from your admin password
+   - Next
+5. DNS Options: you may see a warning about delegation — ignore it, click Next.
+6. NetBIOS domain name: it'll auto-fill (likely `MYDOMAIN`) — leave as-is → Next.
+7. Paths: leave default database/log/SYSVOL locations → Next.
+8. Review Options: confirm everything looks right (domain name, DNS, etc.) → Next.
+9. Prerequisites Check: it'll run a check — some warnings are normal/expected (like DNS delegation), as long as there's no red error blocking you, click **Install**.
+10. The server will automatically **reboot** once promotion completes.
+
+**After reboot**
+- Log back in — you'll now log in as `MYDOMAIN\Administrator` instead of just `Administrator`, since this machine is now a domain controller for `mydomain.com`.
+- Server Manager should show AD DS and DNS roles now active.
 
 
 
