@@ -145,26 +145,37 @@ There's one NIC dedicated to the internet and one for the internal network.
 
 The external one doesn't need much attention — it'll automatically get an IP address from your home router. The internal one needs to be configured manually.
 
-**Open Network Connections**
+**1.Open Network Connections**
 Right-click the Start button → Network Connections, or Control Panel > Network and Sharing Center > Change adapter settings.
+<img width="858" height="452" alt="image" src="https://github.com/user-attachments/assets/f5f3a85d-f81b-4d21-b070-24b7e99335e7" />
 
-**Identify the two NICs**
+
+**2.Identify the two NICs**
 You'll see two adapters, likely named "Ethernet" and "Ethernet 2." To tell them apart, click each one → Details and check:
 - The one with an **IPv4 Default Gateway** listed (e.g. `192.168.64.1`) = your **Internet-facing NIC** (Shared Network/NAT). Leave this one on DHCP, don't touch it.
+<img width="2490" height="1752" alt="image" src="https://github.com/user-attachments/assets/e4908c2a-296d-4f34-832a-9740004b56b7" />
+
 - The one with **no Default Gateway** listed = your **Internal NIC** (Host-Only). This is the one you configure.
+<img width="2484" height="1758" alt="image" src="https://github.com/user-attachments/assets/1a92d04f-35bb-4262-9eb6-7431f3b777c2" />
+
 
 Once you find which is which, rename the external one to **Internet** and the internal one to **Internal** (just names, to easily tell them apart later).
 
-**Configure the Internal NIC**
+**3.Configure the Internal NIC**
 1. Right-click the Internal NIC → **Properties**.
 2. Select **Internet Protocol Version 4 (TCP/IPv4)** → **Properties**.
+<img width="1730" height="1746" alt="image" src="https://github.com/user-attachments/assets/5e18fbb5-77f3-4a10-bb4c-d40a08437e38" />
+
 3. Choose **Use the following IP address**:
    - IP address: `172.16.0.1`
    - Subnet mask: `255.255.255.0`
    - Default gateway: leave blank
 4. Choose **Use the following DNS server address**:
-   - Preferred DNS server: `127.0.0.1` (a loopback address referring to itself — the DC's own IP would also work here)
+   - Preferred DNS server: `127.0.0.1` (a loopback address referring to itself — the DC's own IP would also work here) as it whould look like whats below 
+   <img width="2508" height="1774" alt="image" src="https://github.com/user-attachments/assets/3448e4f0-aeb8-4a8c-bf1c-86077288af8b" />
+
 5. Click **OK**, then **Close**.
+
 
 
 
