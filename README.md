@@ -184,6 +184,8 @@ Once you find which is which, rename the external one to **Internet** and the in
 3. Click **Next** through "Before You Begin."
 4. Installation type: **Role-based or feature-based installation** → Next.
 5. Server selection: leave the local server selected → Next.
+<img width="2428" height="1706" alt="image" src="https://github.com/user-attachments/assets/42e43b74-1aa7-4269-aac8-764fb353a84c" />
+
 6. Server roles: check **Active Directory Domain Services**.
 <img width="790" height="576" alt="image" src="https://github.com/user-attachments/assets/3d429fa0-d8f3-426d-8d1c-8cf489c05657" />
 
@@ -191,6 +193,8 @@ Once you find which is which, rename the external one to **Internet** and the in
 8. Skip the Features page → Next.
 9. Skip the AD DS info page → Next.
 10. Confirm and click **Install**.
+<img width="615" height="466" alt="image" src="https://github.com/user-attachments/assets/e3207351-93fb-4b3e-80cf-3984f724e0b3" />
+
 11. Wait for it to finish (don't close the wizard, just let it run).
 
 **Promote the server to a domain controller**
