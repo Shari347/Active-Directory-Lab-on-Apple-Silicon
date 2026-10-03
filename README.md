@@ -199,7 +199,7 @@ Once you find which is which, rename the external one to **Internet** and the in
 
 **Promote the server to a domain controller**
 1. Once install finishes, click **"Promote this server to a domain controller"** (a link right in the results screen — or via the yellow flag notification icon at the top of Server Manager if you missed it).
-<img width="615" height="466" alt="image" src="https://github.com/user-attachments/assets/9505fd1d-e2a8-41a6-8b5a-734c3296f7a3" />
+<img width="297" height="245" alt="image" src="https://github.com/user-attachments/assets/dffb4d6e-1dbd-40d5-b55c-a416ffb3878b" />
 
 2. Deployment Configuration: select **Add a new forest**.
 3. Root domain name: type `mydomain.com` → Next.
