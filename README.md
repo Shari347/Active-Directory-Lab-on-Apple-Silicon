@@ -78,7 +78,34 @@ Built on Apple Silicon, this lab required **x86_64 emulation (UTM/QEMU)** in pla
 - **Windows 10 ISO** — downloaded the same way from Microsoft
 - **[UTM](https://mac.getutm.app)** — used in place of VirtualBox, since VirtualBox can't run x86_64 Windows Server on Apple Silicon
 
+## Step 1: Create and Configure the Domain Controller (DC) VM
 
+Before first boot, set up the VM with the right architecture and networking so you don't hit firmware mismatches later.
+
+**Enable bi-directional clipboard sharing and drag-and-drop** (optional, but makes moving files in/out of the VM easier)
+
+**Create the VM**
+- Click **+** → choose **Emulate** (not Virtualize)
+- Architecture: **x86_64** (scroll to find it — not the ARM64 default)
+- System: leave default (Q35 chipset)
+
+**Windows-specific screen**
+- Leave "Install Windows 10 or higher" unchecked
+- Browse and select `SERVER2019.iso`
+- Check **UEFI Boot**, leave Secure Boot/TPM unchecked
+- Continue
+
+**Shared Directory screen**
+- Leave blank, Continue
+
+**RAM / Storage**
+- RAM: at least 4096 MB
+- Disk: 64GB+
+
+**Networking (two adapters)**
+- NIC1: Network Mode = **Shared Network** (internet-facing)
+- NIC2: Network Mode = **Host Only** (internal network)
+- Emulated Network Card: Intel Gigabit Ethernet (e1000) on both
 
 
 
