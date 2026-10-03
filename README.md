@@ -1,5 +1,5 @@
 # Active-Directory-Lab-on-Apple-Silicon
-Deploying Windows Server 2019 via x86_64 Emulation
+Deploying Windows Server 2019 via x86_64 Emulation (inspired by Josh Madakor's version with a twist)
 
 ## 💡 Background & Motivation
 Most Active Directory home lab guides assume Intel/AMD hardware running VirtualBox. Windows Server has no native ARM64 build, so running this lab on an Apple Silicon MacBook meant none of the standard steps worked out of the box — from VM creation through to networking.
