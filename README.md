@@ -185,6 +185,8 @@ Once you find which is which, rename the external one to **Internet** and the in
 4. Installation type: **Role-based or feature-based installation** → Next.
 5. Server selection: leave the local server selected → Next.
 6. Server roles: check **Active Directory Domain Services**.
+<img width="790" height="576" alt="image" src="https://github.com/user-attachments/assets/3d429fa0-d8f3-426d-8d1c-8cf489c05657" />
+
 7. A popup will ask to add required features (like RSAT tools) — click **Add Features** → Next.
 8. Skip the Features page → Next.
 9. Skip the AD DS info page → Next.
