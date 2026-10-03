@@ -6,6 +6,24 @@ Most Active Directory home lab guides assume Intel/AMD hardware running VirtualB
 
 This project documents the full build **and** the architecture-specific problems that came up along the way: firmware mismatches between ARM64 and x86_64 virtual machines, OOBE setup failures under emulation, and a networking conflict between UTM's built-in DHCP and the domain controller's own DHCP service — none of which are covered in standard AD lab tutorials.
 
+## 📂 Contents
+
+- [Objective](#-objective)
+- [Lab Architecture](#️-lab-architecture)
+- [Prerequisites](#prerequisites)
+- [Step 1: Create and Configure the Domain Controller VM](#step-1-create-and-configure-the-domain-controller-dc-vm)
+- [Step 2: Booting Up the VM](#step-2-booting-up-the-vm)
+- [Step 3: Configuring IP Addressing](#step-3-configuring-ip-addressing)
+- [Step 4: Install AD DS and Create a Domain](#step-4-install-active-directory-domain-services-ad-ds-and-create-a-domain)
+- [Step 5: Create a Domain Admin Account](#step-5-create-a-domain-admin-account)
+- [Step 6: Install and Set Up RAS/NAT](#step-6-install-and-step-up-rasnat)
+- [Step 7: Set Up DHCP](#step-7-setting-up-a-dhcp-server-on-our-domain-controller)
+- [Step 8: Disable IE Enhanced Security Configuration](#step-8-disabling-ie-enhanced-security-configuration-to-browse-the-internet)
+- [Step 9: Bulk User Provisioning with PowerShell](#step-9-bulk-user-provisioning-with-powershell)
+- [Step 10: Create the Windows 10 Client and Join the Domain](#step-10-create-the-windows-10-client-client1-and-join-the-domain)
+- [Notes & Known Issues](#notes--known-issues)
+- [What You Can Do With This Lab](#what-you-can-do-with-this-lab)
+
 ## 🎯 Objective
 
 Simulate a small enterprise Active Directory environment end-to-end, on hardware it wasn't designed to run on:
