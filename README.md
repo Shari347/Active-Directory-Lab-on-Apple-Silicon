@@ -199,13 +199,19 @@ Once you find which is which, rename the external one to **Internet** and the in
 
 **Promote the server to a domain controller**
 1. Once install finishes, click **"Promote this server to a domain controller"** (a link right in the results screen — or via the yellow flag notification icon at the top of Server Manager if you missed it).
+<img width="615" height="466" alt="image" src="https://github.com/user-attachments/assets/9505fd1d-e2a8-41a6-8b5a-734c3296f7a3" />
+
 2. Deployment Configuration: select **Add a new forest**.
 3. Root domain name: type `mydomain.com` → Next.
+<img width="580" height="430" alt="image" src="https://github.com/user-attachments/assets/220a61af-26f6-451b-a4c6-f47b6a2ba666" />
+
 4. Domain Controller Options:
    - Forest/Domain functional level: leave default (usually fine as Windows Server 2016 or higher)
    - Ensure **DNS Server** is checked (it should be by default)
-   - Set a **Directory Services Restore Mode (DSRM) password** — write this down somewhere safe, it's separate from your admin password
+   - Set a **Directory Services Restore Mode (DSRM) password** — write this down somewhere safe(it can be the same password), it's separate from your admin password
    - Next
+   <img width="580" height="429" alt="image" src="https://github.com/user-attachments/assets/6b7e5f50-b326-4556-9d34-4303e2c04355" />
+
 5. DNS Options: you may see a warning about delegation — ignore it, click Next.
 6. NetBIOS domain name: it'll auto-fill (likely `MYDOMAIN`) — leave as-is → Next.
 7. Paths: leave default database/log/SYSVOL locations → Next.
@@ -216,6 +222,39 @@ Once you find which is which, rename the external one to **Internet** and the in
 **After reboot**
 - Log back in — you'll now log in as `MYDOMAIN\Administrator` instead of just `Administrator`, since this machine is now a domain controller for `mydomain.com`.
 - Server Manager should show AD DS and DNS roles now active.
+<img width="580" height="429" alt="image" src="https://github.com/user-attachments/assets/9458716b-4a6c-4f28-9e29-571d5c0737d9" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
