@@ -139,8 +139,32 @@ If it lands on `Shell>` (UEFI shell) instead of Windows Setup:
 - Wait through install (slow under emulation, reboots itself)
 - Set local Administrator password when prompted
 
+## Step 3: Configuring IP Addressing
 
+There's one NIC dedicated to the internet and one for the internal network.
 
+The external one doesn't need much attention — it'll automatically get an IP address from your home router. The internal one needs to be configured manually.
+
+**Open Network Connections**
+Right-click the Start button → Network Connections, or Control Panel > Network and Sharing Center > Change adapter settings.
+
+**Identify the two NICs**
+You'll see two adapters, likely named "Ethernet" and "Ethernet 2." To tell them apart, click each one → Details and check:
+- The one with an **IPv4 Default Gateway** listed (e.g. `192.168.64.1`) = your **Internet-facing NIC** (Shared Network/NAT). Leave this one on DHCP, don't touch it.
+- The one with **no Default Gateway** listed = your **Internal NIC** (Host-Only). This is the one you configure.
+
+Once you find which is which, rename the external one to **Internet** and the internal one to **Internal** (just names, to easily tell them apart later).
+
+**Configure the Internal NIC**
+1. Right-click the Internal NIC → **Properties**.
+2. Select **Internet Protocol Version 4 (TCP/IPv4)** → **Properties**.
+3. Choose **Use the following IP address**:
+   - IP address: `172.16.0.1`
+   - Subnet mask: `255.255.255.0`
+   - Default gateway: leave blank
+4. Choose **Use the following DNS server address**:
+   - Preferred DNS server: `127.0.0.1` (a loopback address referring to itself — the DC's own IP would also work here)
+5. Click **OK**, then **Close**.
 
 
 
