@@ -102,10 +102,16 @@ Before first boot, set up the VM with the right architecture and networking so y
 - RAM: at least 4096 MB
 - Disk: 64GB+
 
-**Networking (two adapters)**
+**Networking (add two adapters by right-clicking one of the give adapters)**
 - NIC1: Network Mode = **Shared Network** (internet-facing)
+<img width="802" height="180" alt="image" src="https://github.com/user-attachments/assets/f33f08b0-bad9-48b0-ac16-4e3c65cb929a" />
+
 - NIC2: Network Mode = **Host Only** (internal network)
+<img width="802" height="226" alt="image" src="https://github.com/user-attachments/assets/c549ccfc-c4c2-4183-8cd1-dfd40997f46b" />
+
 - Emulated Network Card: Intel Gigabit Ethernet (e1000) on both
+
+
 
 
 
