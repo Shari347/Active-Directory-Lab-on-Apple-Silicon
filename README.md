@@ -18,3 +18,38 @@ Simulate a small enterprise Active Directory environment end-to-end, on hardware
 6. Join a Windows 10 client to the domain and validate authentication
 7. Diagnose and document the emulation-specific issues that don't show up on standard hardware
 
+## 🏗️ Lab Architecture
+
+| Component | Role | Software |
+|---|---|---|
+| Host machine | Hypervisor | UTM (QEMU, x86_64 emulation) |
+| VM 1 | Domain Controller | Windows Server 2019 + AD DS |
+| VM 2 | Domain-joined client | Windows 10 |
+
+```
+[ Host: UTM (QEMU, x86_64 Emulation) ]
+        |
+        |-- VM 1: Windows Server 2019
+        |       └── Domain Controller
+        |               └── Active Directory Domain Services
+        |               └── DNS
+        |               └── DHCP
+        |               └── RAS/NAT
+        |
+        └── VM 2: Windows 10 Client
+                └── Joined to the AD domain
+```
+
+The lab domain used in this build is `mydomain.com`.
+
+**Network layout:**
+
+| NIC | Attached to | Role | IP Config |
+|---|---|---|---|
+| DC — NIC1 | Shared Network | Internet-facing | DHCP (from host) |
+| DC — NIC2 | Host Only | Internal network | Static — `172.16.0.1`, mask `255.255.255.0` |
+| Client1 — NIC | Host Only | Internal network | Static — `172.16.0.101`* |
+
+\* *Intended to be DHCP-assigned from the DC's scope (`172.16.0.100–200`), but set statically due to a UTM networking conflict — see Notes & Known Issues.*
+
+Built on Apple Silicon, this lab required **x86_64 emulation (UTM/QEMU)** in place of VirtualBox, since Windows Server has no native ARM64 build.
