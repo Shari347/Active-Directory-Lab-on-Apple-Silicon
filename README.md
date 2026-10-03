@@ -71,3 +71,35 @@ The lab domain used in this build is `mydomain.com`.
 \* *Intended to be DHCP-assigned from the DC's scope (`172.16.0.100–200`), but set statically due to a UTM networking conflict — see Notes & Known Issues.*
 
 Built on Apple Silicon, this lab required **x86_64 emulation (UTM/QEMU)** in place of VirtualBox, since Windows Server has no native ARM64 build.
+
+## Prerequisites
+
+- **Windows Server 2019 ISO** — from Microsoft's "Get started for free" evaluation page, click **Download the ISO** (not "Try on Azure" or "Download the VHD")
+- **Windows 10 ISO** — downloaded the same way from Microsoft
+- **[UTM](https://mac.getutm.app)** — used in place of VirtualBox, since VirtualBox can't run x86_64 Windows Server on Apple Silicon
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
