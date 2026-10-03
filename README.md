@@ -111,7 +111,33 @@ Before first boot, set up the VM with the right architecture and networking so y
 
 - Emulated Network Card: Intel Gigabit Ethernet (e1000) on both
 
+## Step 2: Booting Up the VM
 
+**Before booting, open VM Settings**
+- Confirm under System: Architecture = **x86_64**, not ARM64
+
+**🔧 Troubleshooting:** If you hit the firmware error *"QEMU error: combined size of system firmware exceeds 8388608 bytes"* →
+Settings > QEMU tab > uncheck UEFI Boot, Save, reopen, check it again, Save.
+
+**Boot the VM**
+
+If it lands on `Shell>` (UEFI shell) instead of Windows Setup:
+- Enter `fs0:` (try `fs1:` if that's empty)
+- `ls` — confirm you see an **EFI** folder
+- `cd EFI\BOOT` → Enter
+- `BOOTX64.EFI` → Enter
+- The instant "Press any key to boot from CD or DVD" appears, press a key immediately
+
+**🔧 Troubleshooting:** If you hit the license terms error *"Windows cannot find the Microsoft Software License Terms"* → remove any second ISO (like utm-guest-tools) from a second CD/DVD drive, keep only `SERVER2019.iso` attached, restart, repeat the boot steps above if needed.
+
+**Windows Server Setup**
+- Language/keyboard → Next → **Install Now**
+- **Windows Server 2019 Standard (Desktop Experience)**
+- Accept license
+- **Custom: Install Windows only (advanced)**
+- Select unallocated disk → Next
+- Wait through install (slow under emulation, reboots itself)
+- Set local Administrator password when prompted
 
 
 
