@@ -346,7 +346,19 @@ EXTRA INFO: When Client1 wants to reach something local — like the DC itself, 
 14. Right-click the server (or the domain itself) in the DHCP console and click Authorize, then right-click it again and click **Refresh** so everything updates and the scope is visible.
 <img width="2532" height="1758" alt="image" src="https://github.com/user-attachments/assets/6c109116-ec78-420c-b0b1-108b1e9dc0dd" />
 
+## Step 8: Disabling IE Enhanced Security Configuration to Browse the Internet
 
+1. Open **Server Manager**.
+2. Click **Local Server** in the left sidebar.
+3. Find **IE Enhanced Security Configuration** in the properties list on the right (it'll say "On").
+<img width="1146" height="349" alt="image" src="https://github.com/user-attachments/assets/d8094b1a-07df-4046-87e9-e312b5ddcfa5" />
+
+4. Click **On** next to it.
+5. In the popup, set both **Administrators** and **Users** to **Off**.
+<img width="316" height="344" alt="image" src="https://github.com/user-attachments/assets/49835fff-8d9d-4cb8-a5ca-65c1f1bd66b2" />
+
+6. Click **OK**.
+7. Close and reopen Internet Explorer (or restart it) for the change to take effect.
 
 
 
