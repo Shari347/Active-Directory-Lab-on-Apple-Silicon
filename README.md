@@ -292,6 +292,59 @@ RAS/NAT is what actually connects your two isolated network segments together. W
 1. Still in Routing and Remote Access, expand your server → **IPv4** → **NAT**.
 2. You should see two interfaces listed: your Internet-facing NIC marked as "Public interface connected to the Internet," and your Internal NIC marked as "Private interface connected to private network."
 
+## Step 7: Setting Up a DHCP Server on Our Domain Controller
+
+DHCP is what actually hands out IP addresses automatically, so you're not manually typing in an IP on every machine that joins the network.
+
+**Install the DHCP Server role**
+1. Server Manager → **Manage** → **Add Roles and Features**.
+2. Next through "Before You Begin" → Role-based install → Next → local server selected → Next.
+3. Check **DHCP Server**.
+4. Click **Add Features** when prompted → Next.
+5. Skip Features page → Next.
+6. Skip the DHCP info page → Next.
+7. Confirm → **Install**.
+<img width="600" height="426" alt="image" src="https://github.com/user-attachments/assets/21b1e6a3-dad8-4402-84f9-13db70ccc0c9" />
+
+8. Wait for it to finish.
+
+**Complete DHCP post-install configuration**
+1. Click the **yellow flag** notification icon.
+2. Click **"Complete DHCP configuration"**.
+3. Next on the intro screen.
+4. Use current credentials (your Domain Admin account) → Commit.
+5. Close.
+
+**Create the DHCP scope**
+1. Server Manager → **Tools** → **DHCP**.
+2. Expand your server → **IPv4** → right-click **IPv4** → **New Scope**.
+<img width="883" height="591" alt="image" src="https://github.com/user-attachments/assets/a01dd829-4928-4530-b2cb-bac2884d13e7" />
+
+3. Scope Wizard → Next.
+4. Name it something like `Internal Scope` → Next.
+5. IP Address Range:
+   - Start IP: `172.16.0.100`
+   - End IP: `172.16.0.200`
+   - Subnet mask: `255.255.255.0` → Next
+   
+<img width="669" height="573" alt="image" src="https://github.com/user-attachments/assets/c3da5b51-f11c-4ac1-8293-2a27715641c7" />
+
+6. Add Exclusions: skip → Next.
+7. Lease Duration (how long a client should keep that IP): leave default → Next.
+8. Configure DHCP Options: **Yes, I want to configure these options now** → Next.
+9. Router (Default Gateway): `172.16.0.1` → Add → Next.
+10. Domain Name and DNS Servers:
+    - Parent domain: `mydomain.com`
+    - DNS server: `172.16.0.1` → Add → Next
+<img width="637" height="569" alt="image" src="https://github.com/user-attachments/assets/c1f23e77-cac2-434e-b155-e96efcf9ef98" />
+
+    > EXTRA INFO: When Client1 wants to reach something local — like the DC itself, for domain login or DNS — it doesn't need a gateway, it just sends directly on the `172.16.0.x` network. But when Client1 wants to reach something outside that network (like google.com), it has no idea how to get there. So it sends that traffic to whatever's configured as its default gateway, and lets that device figure out the rest.
+
+11. WINS Servers: skip → Next.
+12. Activate Scope: **Yes, I want to activate this scope now** → Next.
+13. Finish.
+14. Right-click the server (or the domain itself) in the DHCP console and click Authorize, then right-click it again and click **Refresh** so everything updates and the scope is visible.
+<img width="2532" height="1758" alt="image" src="https://github.com/user-attachments/assets/6c109116-ec78-420c-b0b1-108b1e9dc0dd" />
 
 
 
