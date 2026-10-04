@@ -72,6 +72,11 @@ The lab domain used in this build is `mydomain.com`.
 
 Built on Apple Silicon, this lab required **x86_64 emulation (UTM/QEMU)** in place of VirtualBox, since Windows Server has no native ARM64 build.
 
+A visual of the whole project and how each componenet is structured
+
+<img width="1384" height="823" alt="image" src="https://github.com/user-attachments/assets/c1ec4788-67aa-4912-9286-eae89939baf6" />
+
+
 ## Prerequisites
 
 - **Windows Server 2019 ISO** — from Microsoft's "Get started for free" evaluation page, click **Download the ISO** (not "Try on Azure" or "Download the VHD")
