@@ -224,7 +224,28 @@ Once you find which is which, rename the external one to **Internet** and the in
 - Server Manager should show AD DS and DNS roles now active.
 <img width="580" height="429" alt="image" src="https://github.com/user-attachments/assets/9458716b-4a6c-4f28-9e29-571d5c0737d9" />
 
+## Step 5: Create a Domain Admin Account
 
+**Create a dedicated Domain Admin account**
+1. Open Server Manager → **Tools** → **Active Directory Users and Computers**.
+2. Right-click your domain (`mydomain.com`) in the left pane → **New** → **Organizational Unit**.
+<img width="502" height="402" alt="image" src="https://github.com/user-attachments/assets/00557e9e-7e5a-481b-bb2f-395b0364461a" />
+
+3. Name it something like `Admins` → OK (leave "Protect from accidental deletion" checked).
+<img width="335" height="293" alt="image" src="https://github.com/user-attachments/assets/4009c3d6-9e50-4457-bc49-a847aaf40c22" />
+
+4. Right-click the new **Admins** OU → **New** → **User**.
+<img width="335" height="293" alt="image" src="https://github.com/user-attachments/assets/287b8a52-ec6a-474c-9fa7-005e37ae9a1e" />
+
+5. Fill in a first/last name and a logon name for yourself (e.g. `shari-admin`) → Next.
+6. Set a password, uncheck "User must change password at next logon" if you don't want that hassle, check "Password never expires" for lab convenience → Next → Finish.
+7. Right-click the new user you just created → **Properties**.
+8. Go to the **Member Of** tab → **Add**.
+9. Type `Domain Admins` → Check Names → OK → Apply → OK.
+<img width="363" height="401" alt="image" src="https://github.com/user-attachments/assets/2279b4b3-e7c8-4c25-9f0d-eae5f4fd543b" />
+
+10. Sign out of the built-in Administrator account.
+11. At the login screen, choose **Other User**, log in as `MYDOMAIN\your-new-username` with the password you set.
 
 
 
