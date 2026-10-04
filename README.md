@@ -401,11 +401,10 @@ Instead of manually creating a bunch of users, use a PowerShell script to add a 
 4. Let it run — it'll loop through the names file and create a domain user for each one. With 1000+ names this can take a few minutes.
 
 <img width="1286" height="296" alt="image" src="https://github.com/user-attachments/assets/8ea9ed13-3980-49da-8a91-66c27a527136" />
-**🔧 Troubleshooting:** If you get an `ObjectNotFound` error for `names.txt`, run:
-```powershell
-cd C:\Users\s-hossain\Desktop\AD_PS-master
-.\1_CREATE_USERS.ps1
-```
+**🔧 Troubleshooting:** If you get an `ObjectNotFound` error for `names.txt`, run in PowerShell:
+- cd C:\Users\YOURADMINNAMEDesktop\AD_PS-master (for exxample: cd C:\Users\s-hossain\Desktop\AD_PS-master)
+- .\1_CREATE_USERS.ps1
+
 This fixes a working-directory mismatch — the script should now find `names.txt` sitting in that folder.
 
 **Verify**
