@@ -360,7 +360,80 @@ EXTRA INFO: When Client1 wants to reach something local — like the DC itself, 
 6. Click **OK**.
 7. Close and reopen Internet Explorer (or restart it) for the change to take effect.
 
+## Step 9: Bulk User Provisioning with PowerShell
 
+Instead of manually creating a bunch of users, use a PowerShell script to add a whole batch of sample users to the server at once.
+
+**Download the repo on the DC**
+1. Open Internet Explorer on the DC (now that ESC is off) → go to `https://github.com/joshmadakor1/AD_PS`. i will also have the script in a folder with this repo
+<img width="2994" height="1722" alt="image" src="https://github.com/user-attachments/assets/a8fddda3-2caa-44be-a160-42bb08724542" />
+
+2. Click the green **Code** button → **Download ZIP**.
+3. Save it — Desktop is easiest to find later.
+4. Right-click the downloaded ZIP → **Extract All** → extract to Desktop.
+<img width="855" height="453" alt="image" src="https://github.com/user-attachments/assets/8491c408-4b22-4ac1-9b98-c46a275c0a0a" />
+
+
+**Add your name to the names list (optional)**
+1. Open the extracted folder → open `names.txt`.
+<img width="1439" height="1080" alt="image" src="https://github.com/user-attachments/assets/f354b60e-f23b-42d5-b01a-fe86b1c24637" />
+
+2. Add your own name to the list if you want yourself included as one of the generated users → Save.
+<img width="1443" height="1080" alt="image" src="https://github.com/user-attachments/assets/f6f186ee-462b-4596-9a1d-a15d33f91164" />
+
+
+**Allow PowerShell scripts to run**
+1. Click Start → type **PowerShell ISE** → right-click **Windows PowerShell ISE** → **Run as Administrator**.
+<img width="1443" height="1079" alt="image" src="https://github.com/user-attachments/assets/f6490ea3-20dc-43db-b626-5f7e920ba6ed" />
+
+2. In the console/command pane, type:
+```powershell
+   Set-ExecutionPolicy Unrestricted
+```
+
+3. Press Enter → type **A** (Yes to All) when it asks to confirm.
+   - This temporarily allows unsigned scripts to run — normal for a lab, not something you'd do in production.
+
+**Open and run the script**
+1. In PowerShell ISE, **File > Open** → navigate to the extracted folder → open `1_CREATE_USERS.ps1`.
+2. Check the top of the script — it should reference `names.txt` in the same folder, so as long as both files are together, it'll find it.
+3. Click the green **Run** (play) button, or press **F5**.
+4. Let it run — it'll loop through the names file and create a domain user for each one. With 1000+ names this can take a few minutes.
+
+<img width="1286" height="296" alt="image" src="https://github.com/user-attachments/assets/8ea9ed13-3980-49da-8a91-66c27a527136" />
+**🔧 Troubleshooting:** If you get an `ObjectNotFound` error for `names.txt`, run:
+```powershell
+cd C:\Users\s-hossain\Desktop\AD_PS-master
+.\1_CREATE_USERS.ps1
+```
+This fixes a working-directory mismatch — the script should now find `names.txt` sitting in that folder.
+
+**Verify**
+1. Open **Active Directory Users and Computers**.
+2. Check the OU the script creates users in (usually a new `_USERS` OU, or wherever the script's `-Path` parameter points).
+3. You should see a long list of newly created user accounts.
+
+<img width="1445" height="1009" alt="image" src="https://github.com/user-attachments/assets/1220445b-ba40-42b2-8c37-0c5bff1d44b8" />
+
+---
+
+### PowerShell Script Explanation
+
+**Lines 1-3: Setup variables**
+- `$PASSWORD_FOR_USERS = "Password1"` — sets one shared default password that every generated user account will get.
+- `$USER_FIRST_LAST_LIST = Get-Content .\names.txt` — reads `names.txt` (must be in the same folder as the script) and loads every line into a list, one name per line.
+
+**Line 6: Convert the password**
+- `$password = ConvertTo-SecureString $PASSWORD_FOR_USERS -AsPlainText -Force` — Active Directory won't accept a plain text password directly, it needs it wrapped as a "secure string" object. This line converts the plain text password into the format AD requires.
+
+**Line 7: Create the container**
+- `New-ADOrganizationalUnit -Name _USERS -ProtectedFromAccidentalDeletion $false` — creates a new OU called `_USERS` where all these accounts will live. `ProtectedFromAccidentalDeletion $false` means it can be deleted later without extra confirmation steps.
+
+**Line 9: The loop begins**
+- `foreach ($n in $USER_FIRST_LAST_LIST) {` — starts a loop that runs once for every name in the list.
+
+**Lines 10-12: Parse each name**
+- `$first = $n.Split(" ")[0].ToLower()` —
 
 
 
