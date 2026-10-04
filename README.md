@@ -582,7 +582,7 @@ VirtualBox's "Internal Network" mode is just a blank, isolated connection betwee
 8. Click OK → OK → you'll be prompted to restart.
 9. Click **Restart Now**.
 10. Verify on the DC by opening **Active Directory Users and Computers** → **Computers** — Client1 should be listed there.
-````
+
 ## Notes & Known Issues
 
 **ARM64 vs. x86_64 — the core problem**
@@ -610,9 +610,16 @@ Covered in detail in Step 10 above — summarized here: UTM's "Host Only" networ
 **Why none of this shows up in standard AD lab guides**
 Every mainstream Active Directory home lab tutorial (including the one this project follows) assumes Intel/AMD hardware running VirtualBox. None of the above issues exist on that combination — VirtualBox doesn't require emulation on Intel/AMD hosts, and its "Internal Network" mode has no competing DHCP service. These issues are specific to running this kind of lab on Apple Silicon.
 
+## What You Can Do With This Lab
 
+Hey, this is the end of the build — here's what you can do with it now:
 
-
+- Log in as different domain users (including the ones from the PowerShell script) and poke around permissions
+- Create more users/groups in Active Directory Users and Computers, or set up Group Policies and see how they apply to Client1
+- Add a second client VM and watch it join the same domain
+- Set up a shared folder on the DC and test access from Client1 as a domain user
+- Use it as a safe space to practice basic AD security concepts — things like enumeration or privilege checks, since the whole environment is isolated and disposable
+- Intentionally break something (DNS, a GPO, DHCP) and practice fixing it, since troubleshooting a live AD environment is its own skill
 
 
 
