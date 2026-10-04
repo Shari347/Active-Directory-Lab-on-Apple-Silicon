@@ -417,23 +417,40 @@ This fixes a working-directory mismatch — the script should now find `names.tx
 
 ---
 
-### PowerShell Script Explanation
+````markdown
+### 📜 PowerShell Script Explanation
 
 **Lines 1-3: Setup variables**
-- `$PASSWORD_FOR_USERS = "Password1"` — sets one shared default password that every generated user account will get.
-- `$USER_FIRST_LAST_LIST = Get-Content .\names.txt` — reads `names.txt` (must be in the same folder as the script) and loads every line into a list, one name per line.
+- `$PASSWORD_FOR_USERS = "Password1"` — this sets one shared default password that every generated user account will get. You could change this if you wanted, but it's fine to leave as-is for a lab.
+- `$USER_FIRST_LAST_LIST = Get-Content .\names.txt` — this reads your `names.txt` file (which needs to be in the same folder as the script) and loads every line into a list, one name per line.
 
 **Line 6: Convert the password**
-- `$password = ConvertTo-SecureString $PASSWORD_FOR_USERS -AsPlainText -Force` — Active Directory won't accept a plain text password directly, it needs it wrapped as a "secure string" object. This line converts the plain text password into the format AD requires.
+- `$password = ConvertTo-SecureString $PASSWORD_FOR_USERS -AsPlainText -Force` — Active Directory won't accept a plain text password directly, it needs it wrapped as a "secure string" object. This line just converts your plain text password into the format AD requires.
 
 **Line 7: Create the container**
-- `New-ADOrganizationalUnit -Name _USERS -ProtectedFromAccidentalDeletion $false` — creates a new OU called `_USERS` where all these accounts will live. `ProtectedFromAccidentalDeletion $false` means it can be deleted later without extra confirmation steps.
+- `New-ADOrganizationalUnit -Name _USERS -ProtectedFromAccidentalDeletion $false` — creates a new OU called `_USERS` where all these accounts will live. The `ProtectedFromAccidentalDeletion $false` part just means it can be deleted later without extra confirmation steps (normally AD protects OUs from accidental deletion by default).
 
 **Line 9: The loop begins**
-- `foreach ($n in $USER_FIRST_LAST_LIST) {` — starts a loop that runs once for every name in the list.
+- `foreach ($n in $USER_FIRST_LAST_LIST) {` — this starts a loop that runs once for every name in your list. Everything indented below runs repeatedly, once per name.
 
 **Lines 10-12: Parse each name**
-- `$first = $n.Split(" ")[0].ToLower()` —
+- `$first = $n.Split(" ")[0].ToLower()` — takes a line like "John Smith" and splits it at the space, grabbing "John" and lowercasing it.
+- `$last = $n.Split(" ")[1].ToLower()` — same thing, grabs "Smith."
+- `$username = "$($first.Substring(0,1))$($last)".ToLower()` — builds a username from the first letter of the first name plus the full last name, so "John Smith" becomes username `jsmith`.
+
+**Line 13: Just a progress message**
+- `Write-Host "Creating user: $($username)"` — prints to the screen which user it's about to create, in cyan text, so you can watch it work in real time.
+
+**Lines 15-23: Actually create the user**
+- `New-AdUser` — the real AD command doing the work. It sets:
+  - `-AccountPassword $password` — assigns that shared password from step 1
+  - `-GivenName $first` / `-Surname $last` — first/last name
+  - `-DisplayName $username` / `-Name $username` — how the account shows up in AD
+  - `-EmployeeID $username` — just tags the username as an employee ID field too
+  - `-PasswordNeverExpires $true` — skips normal password expiration policy
+  - `-Path "ou=_USERS,..."` — tells AD to place this user inside the `_USERS` OU you created in line 7
+  - `-Enabled $true` (continues below what's shown) — account is active immediately, not disabled
+````
 
 
 
