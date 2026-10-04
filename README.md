@@ -252,7 +252,45 @@ Once you find which is which, rename the external one to **Internet** and the in
 10. Sign out of the built-in Administrator account.
 11. At the login screen, choose **Other User**, log in as `MYDOMAIN\your-new-username` with the password you set.
 
+## Step 6: Install and Set Up RAS/NAT
 
+RAS/NAT is what actually connects your two isolated network segments together. Without it, Client1 would be stuck — it can talk to the DC (same internal network), but it has zero route to the actual internet.
+
+**Install the Remote Access role (Routing)**
+1. Open Server Manager → **Manage** → **Add Roles and Features**.
+2. Next through "Before You Begin" → Role-based install → Next → local server selected → Next.
+3. Check **Remote Access**.
+<img width="601" height="429" alt="image" src="https://github.com/user-attachments/assets/dba681fd-5a19-491c-ad66-f6245f0fa528" />
+
+4. Click **Add Features** if prompted → Next.
+5. Skip Features page → Next.
+6. Skip the Remote Access info page → Next.
+7. On **Role Services**, check **Routing** (this auto-selects DirectAccess and VPN (RAS) too — leave those checked, you just need Routing but they come bundled).
+<img width="603" height="432" alt="image" src="https://github.com/user-attachments/assets/3a955ed9-b626-44fe-be1c-ecfe979ff7bf" />
+
+8. Click **Add Features** if prompted → Next.
+9. Confirm → **Install**.
+<img width="602" height="432" alt="image" src="https://github.com/user-attachments/assets/45890050-ee09-408b-9fa0-8358554d7e1f" />
+
+10. Wait for it to finish → **Close**.
+
+**Configure Routing and Remote Access**
+1. In Server Manager, go to **Tools** → **Routing and Remote Access**.
+2. In the left pane, right-click your server name (should show a red down-arrow icon, meaning not yet configured) → **Configure and Enable Routing and Remote Access**.
+3. Wizard opens → Next.
+<img width="2536" height="1768" alt="image" src="https://github.com/user-attachments/assets/7c15795c-505e-4c7d-aa14-f13bb366ab0e" />
+
+4. Select **Network address translation (NAT)** → Next.
+5. Choose the **public interface** — this is your Internet-facing NIC (the one with the gateway, on Shared Network/NAT) → make sure "Enable NAT on this interface" stays checked → Next.
+   - If it doesn't pop up, close the Routing and Remote Access tab and reopen it — it should fix itself.
+   <img width="2540" height="1778" alt="image" src="https://github.com/user-attachments/assets/78f859a9-5945-44a8-af3a-d7fd7dbf47bd" />
+
+6. Finish.
+7. It'll start the service — you should see the server icon change to a green arrow, meaning RAS/NAT is now running.
+
+**Verify NAT config**
+1. Still in Routing and Remote Access, expand your server → **IPv4** → **NAT**.
+2. You should see two interfaces listed: your Internet-facing NIC marked as "Public interface connected to the Internet," and your Internal NIC marked as "Private interface connected to private network."
 
 
 
