@@ -338,7 +338,7 @@ DHCP is what actually hands out IP addresses automatically, so you're not manual
     - DNS server: `172.16.0.1` → Add → Next
 <img width="637" height="569" alt="image" src="https://github.com/user-attachments/assets/c1f23e77-cac2-434e-b155-e96efcf9ef98" />
 
-    > EXTRA INFO: When Client1 wants to reach something local — like the DC itself, for domain login or DNS — it doesn't need a gateway, it just sends directly on the `172.16.0.x` network. But when Client1 wants to reach something outside that network (like google.com), it has no idea how to get there. So it sends that traffic to whatever's configured as its default gateway, and lets that device figure out the rest.
+EXTRA INFO: When Client1 wants to reach something local — like the DC itself, for domain login or DNS — it doesn't need a gateway, it just sends directly on the `172.16.0.x` network. But when Client1 wants to reach something outside that network (like google.com), it has no idea how to get there. So it sends that traffic to whatever's configured as its default gateway, and lets that device figure out the rest.
 
 11. WINS Servers: skip → Next.
 12. Activate Scope: **Yes, I want to activate this scope now** → Next.
