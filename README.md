@@ -452,7 +452,163 @@ This fixes a working-directory mismatch — the script should now find `names.tx
   - `-Enabled $true` (continues below what's shown) — account is active immediately, not disabled
 ````
 
+## Step 10: Create the Windows 10 Client (Client1) and Join the Domain
 
+Client1 uses an internal NIC and gets its IP addressing from the DHCP server already configured on the DC.
+
+**Create the VM in UTM**
+- Click **+** → **Emulate** (ARM builds of Windows 10 aren't easily available through Microsoft's public download, so this matches the DC setup)
+- Architecture: **x86_64**
+- System: leave default
+
+**Windows screen**
+- Leave "Install Windows 10 or higher" unchecked
+- Browse → select Windows 10 ISO
+- Check **UEFI Boot**, leave Secure Boot unchecked
+- Continue
+
+**Shared Directory**
+- Leave blank, Continue
+
+**Hardware**
+- RAM: 2048-4096 MB
+- Disk: 64GB+
+<img width="911" height="653" alt="image" src="https://github.com/user-attachments/assets/61f15d36-42c8-4db0-b10f-62d7438d6cea" />
+
+
+**Networking (install phase)**
+- Network Mode: **Shared Network** (gives real internet during install/OOBE, avoids update-loop issues — switch to Host Only later)
+- Emulated Network Card: Intel Gigabit Ethernet (e1000)
+
+**Before booting**
+- Settings > System: confirm Architecture = **x86_64** (switching after creation can cause a firmware mismatch)
+
+**Boot and install**
+- If it drops to UEFI Shell: `fs0:` → `ls` → `cd EFI\BOOT` → `BOOTX64.EFI`, press a key immediately when "Press any key to boot from CD or DVD" appears
+<img width="807" height="642" alt="image" src="https://github.com/user-attachments/assets/1858cffd-b864-4a2d-abe1-b422c7c17376" />
+
+- Language/keyboard → Next → **Install Now**
+- Choose **Windows 10 Pro**
+- Accept license
+- **Custom: Install Windows only (advanced)** → select disk → Next
+- Let it install uninterrupted
+
+**First automatic restart mid-install**
+- Once "Installing Windows" finishes and it restarts into a black screen trying to boot up from a cd or such, go to Settings > Drives (or the CD/DVD dropdown in the VM toolbar) → **Clear**, ejecting the ISO so it can't boot back into Setup (it will remove the iso drive)
+<img width="649" height="128" alt="image" src="https://github.com/user-attachments/assets/8c53b090-2abc-4fbf-8dce-dc3a1b01c04b" />
+
+*(If you had no issues, skip the troubleshooting above and continue below as normal.)*
+
+**🔧 Troubleshooting:** If you hit a stuck "Just a moment" or "Something went wrong" loop at any OOBE stage:
+1. Let it load, click **Try again** a few times — can take several attempts and a long wait
+2. If it keeps failing, press **Shift + F10** to open Command Prompt and run, one at a time:
+   ```
+   net user Administrator active:yes
+   net user /add admin admin
+   net localgroup Administrators admin /add
+   cd %windir%\system32\oobe
+   msoobe.exe
+   ```
+
+<img width="800" height="641" alt="image" src="https://github.com/user-attachments/assets/88fb7d2a-0e9e-404d-a58f-3f96e1bb94b7" />
+
+3. This either relaunches OOBE cleanly (now that valid accounts exist) or drops you to a login screen directly
+4. If it goes back to a stuck loading screen, restart the VM — it should land on a login screen where you can log in as `admin` with the password you set
+
+<img width="782" height="627" alt="image" src="https://github.com/user-attachments/assets/83d679b7-8a42-4504-bd0c-b34f53b6396c" />
+
+
+*(If you had no issues, skip the troubleshooting above and continue below as normal.)*
+
+**OOBE**
+- With real internet, it should get through setup normally
+- If it shows an error with a Skip option, click **Skip** — lets you set up a local account
+- If prompted for a Microsoft account, choose offline account / sign-in options → local account instead
+- Create a local account, set a password, finish OOBE
+
+**Once at the desktop**
+- Confirm it's working normally, let any pending Windows Update finish since you have real internet
+
+**Switch to the internal network**
+- Settings > Network → change Network Mode to **Host Only**
+
+---
+
+### ⚠️ Note: DHCP Was Configured Correctly but Not Used for Live Client Addressing
+
+This lab was built in UTM on Apple Silicon instead of VirtualBox (what the reference video uses), which led to a networking quirk.
+
+VirtualBox's "Internal Network" mode is just a blank, isolated connection between VMs — nothing runs on it unless you set it up yourself. UTM's "Host Only" mode is different: it's built on macOS's own `vmnet` framework, which runs its own DHCP server automatically. That service answers Client1's requests before the DC's DHCP role ever gets the chance — so Client1 ends up with a `192.168.x.x` address from macOS instead of the lab's intended `172.16.0.x` range. There's no setting in UTM to turn this off.
+
+**Workaround:** Client1 was given a static IP instead — `172.16.0.101`, subnet `255.255.255.0`, gateway `172.16.0.1`, DNS `172.16.0.1`.
+
+**What this means:** the DC's DHCP server is fully installed, authorized in AD, and correctly scoped (`172.16.0.100–200`, with gateway/DNS options set, scope activated). It just never received a request to respond to (check the Address Leases — it'll be empty), because of the UTM/macOS behavior above — not because of anything wrong with the DHCP config itself. In VirtualBox, this same setup would work exactly as the video shows, no static IP needed. **DHCP isn't useless — the only thing it isn't doing here is assigning an IP address; everything else about it is working correctly.**
+
+**🔧 Troubleshooting:** Some setups may not hit this issue, but when checking the default gateway on Client1, it may not show up. This is usually because the Router (003) option wasn't set at the DHCP server level, not just the scope level. Before configuring Client1, double check:
+1. Go to **DHCP** on the server → **IPv4** → **Server Options**.
+2. If you don't see a Router entry there, right-click **Server Options** → **Configure Options**.
+<img width="952" height="722" alt="image" src="https://github.com/user-attachments/assets/83bbdada-6021-4287-aa89-3b0b44751314" />
+3. Check **003 Router**, enter your internal network IP (`172.16.0.1`), click **Add** → **Apply** → **OK**.
+4. On Client1, open Command Prompt, run `ipconfig /renew`, and you should now see the default gateway.
+<img width="949" height="717" alt="image" src="https://github.com/user-attachments/assets/54dd3cb2-e08e-4267-83a5-26de45991a73" />
+
+**Configure Client1's static IP (so it can reach the Domain Controller)**
+1. Right-click Start → **Network Connections** → right-click your Ethernet adapter → **Properties**.
+2. **Internet Protocol Version 4 (TCP/IPv4)** → **Properties**.
+3. **Use the following IP address**:
+   - IP address: `172.16.0.101` (or anything in the `100–200` range, just not `.1` since that's the DC)
+   - Subnet mask: `255.255.255.0`
+   - Default gateway: `172.16.0.1`
+4. **Use the following DNS server address**:
+   - Preferred DNS: `172.16.0.1`
+5. OK, Close.
+<img width="790" height="601" alt="image" src="https://github.com/user-attachments/assets/9087a395-0a98-44a6-a0bb-1ffb262a7081" />
+
+6. Run `ipconfig` in Command Prompt.
+7. Test with `ping mydomain.com`.
+
+**Join the domain**
+1. Right-click Start → **System**.
+2. Scroll down and click **Rename this PC (advanced)** (or Related Settings → Domain or workgroup).
+3. In System Properties, click **Change...**
+4. Under "Member of," select **Domain**.
+5. Enter `mydomain.com` → OK.
+6. At the credentials prompt, enter your Domain Admin username and password (`MYDOMAIN\your-username`).
+<img width="801" height="598" alt="image" src="https://github.com/user-attachments/assets/aeba3a7e-168a-459f-9f6c-2d906b259156" />
+
+7. Wait for the dialog: **"Welcome to the mydomain.com domain."**
+<img width="784" height="632" alt="image" src="https://github.com/user-attachments/assets/e04bdbf6-d462-49f8-80d4-ecb35a7e290c" />
+
+8. Click OK → OK → you'll be prompted to restart.
+9. Click **Restart Now**.
+10. Verify on the DC by opening **Active Directory Users and Computers** → **Computers** — Client1 should be listed there.
+````
+## Notes & Known Issues
+
+**ARM64 vs. x86_64 — the core problem**
+Windows Server and Windows 10 (via Microsoft's public download) ship as x86_64 only. Apple Silicon Macs run ARM64 natively, so neither OS can run under standard virtualization (VirtualBox's Virtualize mode, UTM's Virtualize mode) on this hardware. The only path forward is **emulation** — UTM running QEMU in x86_64 software-emulation mode — which is slower than native virtualization but functional.
+
+**Firmware/NVRAM mismatch after switching architecture**
+If a VM is initially created as ARM64 and the architecture is changed to x86_64 afterward, the firmware file UTM generates can end up mismatched, producing: *"QEMU error: combined size of system firmware exceeds 8388608 bytes."* Fix: toggle UEFI Boot off and back on in Settings > QEMU to force UTM to regenerate the firmware correctly. Better fix: pick x86_64 from the very first VM creation screen, don't switch it after.
+
+**Boot-loop after the first automatic restart mid-install**
+Windows Setup restarts automatically partway through installation. If the install ISO is still mounted, the VM boots back into the installer instead of continuing from the hard disk — looping indefinitely. Fix: eject the ISO (CD/DVD dropdown in the VM toolbar, or Settings > Drives → Clear) the moment the first restart happens.
+
+**OOBE instability under emulation**
+Later stages of Windows 10 setup (account creation, privacy settings, "Just a moment" screens) are CPU-heavy and can fail or hang for extended periods under software emulation — sometimes 30+ minutes, sometimes outright erroring with "Something went wrong." This is a documented QEMU/emulation limitation, not specific to this build. Workarounds that helped: retrying several times, or forcing past OOBE via Command Prompt (`Shift+F10`) by creating a local admin account manually and relaunching OOBE with `msoobe.exe`, or forcing setup to be marked complete via registry:
+```
+reg add "HKLM\SYSTEM\Setup" /v "SetupType" /t REG_DWORD /d 0 /f
+reg add "HKLM\SYSTEM\Setup" /v "SystemSetupInProgress" /t REG_DWORD /d 0 /f
+```
+
+**Losing install progress from a force-quit**
+Force-quitting UTM (or the Mac going to sleep) mid-install can lose any changes that hadn't been flushed to disk yet, since nothing was written beyond what's in memory. Always shut down the guest OS properly, or use UTM's own Stop/power signal — never force-quit the app while a VM is actively writing to disk.
+
+**DHCP configured correctly but not used for live client addressing**
+Covered in detail in Step 10 above — summarized here: UTM's "Host Only" network mode runs its own built-in DHCP server (via macOS's `vmnet` framework) that answers client requests before the DC's DHCP role gets the chance. There's no UTM setting to disable this. Client1 was given a static IP as a workaround. The DC's DHCP server itself is fully installed, authorized, and correctly scoped — it simply never received a request to respond to.
+
+**Why none of this shows up in standard AD lab guides**
+Every mainstream Active Directory home lab tutorial (including the one this project follows) assumes Intel/AMD hardware running VirtualBox. None of the above issues exist on that combination — VirtualBox doesn't require emulation on Intel/AMD hosts, and its "Internal Network" mode has no competing DHCP service. These issues are specific to running this kind of lab on Apple Silicon.
 
 
 
