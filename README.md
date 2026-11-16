@@ -632,19 +632,30 @@ Set the policy
 1. On the DC, open Server Manager, then Tools, then Group Policy Management.
 2. Expand Forest: mydomain.com, then Domains, then mydomain.com.
 3. Right-click Default Domain Policy and click Edit.
-4. Go to Computer Configuration, then Policies, Windows Settings, Security Settings, Account Policies.
-5. Click Password Policy and double-click each setting to define it: 
+
+<img width="907" height="690" alt="image" src="https://github.com/user-attachments/assets/c8ddf462-01ff-443b-8ef1-d9c6629ee853" />
+
+5. Go to Computer Configuration, then Policies, Windows Settings, Security Settings, Account Policies.
+
+<img width="907" height="692" alt="image" src="https://github.com/user-attachments/assets/91d75f04-ae51-41a3-9095-d143355b81b8" />
+
+7. Click Password Policy and double-click each setting to define it: 
    - Enforce password history: 24
    - Maximum password age: 90 days
    - Minimum password age: 1 day
    - Minimum password length: 12
    - Password must meet complexity requirements: Enabled
-6. Click Account Lockout Policy:
+  
+<img width="908" height="685" alt="image" src="https://github.com/user-attachments/assets/24e3c303-c6e4-4c9b-b30c-ed934944ef78" />
+
+8. Click Account Lockout Policy:
    - Account lockout threshold: 5 invalid attempts (set this first)
    - A popup will suggest values for the other two. Click OK, or change both to 15 minutes.
    - Account lockout duration: 15 minutes
    - Reset account lockout counter after: 15 minutes
-7. Close the editor.
+9. Close the editor.
+
+<img width="910" height="687" alt="image" src="https://github.com/user-attachments/assets/cab28961-43ac-4eb4-bce2-623b15e3ce70" />
 
 **Apply it**
 1. On the DC, open PowerShell and run gpupdate /force.
