@@ -25,7 +25,7 @@ This project documents the full build **and** the architecture-specific problems
 - [What You Can Do With This Lab](#what-you-can-do-with-this-lab)
 
 Some more admin and security upgrades
-- [Part 1: GPO (password policy and account lockout)](#Part-1:GPO-(password-policy-and-account-lockout))
+- [Part 1: GPO (password policy and account lockout)](#Part-1-GPO-password-policy-and-account-lockout)
 - [Part 2: User and group administration](#Part-2-User-and-group-administration)
 - [EXTRAS you can try](#EXTRAS-you-can-try)
 
