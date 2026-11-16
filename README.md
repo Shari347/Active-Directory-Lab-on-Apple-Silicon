@@ -634,35 +634,39 @@ Set the policy
 3. Right-click Default Domain Policy and click Edit.
 4. Go to Computer Configuration, then Policies, Windows Settings, Security Settings, Account Policies.
 5. Click Password Policy and double-click each setting to define it: 
-		○ Enforce password history: 24
-		○ Maximum password age: 90 days
-		○ Minimum password age: 1 day
-		○ Minimum password length: 12
-		○ Password must meet complexity requirements: Enabled
-	6. Click Account Lockout Policy: 
-		○ Account lockout threshold: 5 invalid attempts (set this first)
-		○ A popup will suggest values for the other two. Click OK, or change both to 15 minutes.
-		○ Account lockout duration: 15 minutes
-		○ Reset account lockout counter after: 15 minutes
-	7. Close the editor.
-Apply it
-	1. On the DC, open PowerShell and run gpupdate /force.
-	2. Then run Get-ADDefaultDomainPasswordPolicy and confirm the values match what you set.
-Check it from Client1
-	1. Open Command Prompt on Client1.
-	2. Run gpupdate /force.
-	3. Run net accounts /domain and confirm it shows the same policy.
-Test the lockout
-	1. On the Client1 sign-in screen, click Other User.
-	2. Enter MYDOMAIN\jsmith (or any generated user) with the wrong password 5 times.
-	3. Enter the correct password (Password1). It should say the account is locked.
-	4. On the DC, open Active Directory Users and Computers.
-	5. Double-click the user, go to the Account tab, check Unlock account, and click OK. 
-		○ PowerShell version: Unlock-ADAccount -Identity jsmith
-	6. Optional: on the DC, open Event Viewer, then Windows Logs, then Security, and look for Event ID 4740 (account lockout).
-Things to expect
-	• Password1 is 9 characters, so resetting any account to it will now be rejected (12 minimum).
-	• Existing script accounts keep Password1 until a reset, and “never expires” means the 90-day max age doesn’t apply to them.
+   - Enforce password history: 24
+   - Maximum password age: 90 days
+   - Minimum password age: 1 day
+   - Minimum password length: 12
+   - Password must meet complexity requirements: Enabled
+6. Click Account Lockout Policy:
+   - Account lockout threshold: 5 invalid attempts (set this first)
+   - A popup will suggest values for the other two. Click OK, or change both to 15 minutes.
+   - Account lockout duration: 15 minutes
+   - Reset account lockout counter after: 15 minutes
+7. Close the editor.
+
+**Apply it**
+1. On the DC, open PowerShell and run gpupdate /force.
+2. Then run Get-ADDefaultDomainPasswordPolicy and confirm the values match what you set.
+   
+**Check it from Client1**
+1. Open Command Prompt on Client1.
+2. Run gpupdate /force.
+3. Run net accounts /domain and confirm it shows the same policy.
+	
+**Test the lockout**
+1. On the Client1 sign-in screen, click Other User.
+2. Enter MYDOMAIN\jsmith (or any generated user) with the wrong password 5 times.
+3. Enter the correct password (Password1). It should say the account is locked.
+4. On the DC, open Active Directory Users and Computers.
+5. Double-click the user, go to the Account tab, check Unlock account, and click OK. 
+	- PowerShell version: Unlock-ADAccount -Identity jsmith
+6. Optional: on the DC, open Event Viewer, then Windows Logs, then Security, and look for Event ID 4740 (account lockout).
+   
+**Things to expect**
+• Password1 is 9 characters, so resetting any account to it will now be rejected (12 minimum).
+• Existing script accounts keep Password1 until a reset, and “never expires” means the 90-day max age doesn’t apply to them.
 
 ## Part 2: User and group administration
 Step 1: Build the OU structure
