@@ -660,6 +660,8 @@ Set the policy
 **Apply it**
 1. On the DC, open PowerShell and run gpupdate /force.
 2. Then run Get-ADDefaultDomainPasswordPolicy and confirm the values match what you set.
+
+<img width="907" height="678" alt="image" src="https://github.com/user-attachments/assets/05cd0efc-6ce5-4b6d-8a2e-64b0cede1f01" />
    
 **Check it from Client1**
 1. Open Command Prompt on Client1.
@@ -670,10 +672,16 @@ Set the policy
 1. On the Client1 sign-in screen, click Other User.
 2. Enter MYDOMAIN\jsmith (or any generated user) with the wrong password 5 times.
 3. Enter the correct password (Password1). It should say the account is locked.
-4. On the DC, open Active Directory Users and Computers.
-5. Double-click the user, go to the Account tab, check Unlock account, and click OK. 
+
+<img width="803" height="603" alt="image" src="https://github.com/user-attachments/assets/32afcdcb-ca0f-4e1a-8d04-827c563e339e" />
+
+5. On the DC, open Active Directory Users and Computers.
+6. Double-click the user, go to the Account tab, check Unlock account, and click OK. 
 	- PowerShell version: Unlock-ADAccount -Identity jsmith
-6. Optional: on the DC, open Event Viewer, then Windows Logs, then Security, and look for Event ID 4740 (account lockout).
+
+<img width="907" height="634" alt="image" src="https://github.com/user-attachments/assets/1ed64d67-56d9-4cdb-928b-b221726109ce" />
+
+7. Optional: on the DC, open Event Viewer, then Windows Logs, then Security, and look for Event ID 4740 (account lockout).
    
 **Things to expect**
 - Password1 is 9 characters, so resetting any account to it will now be rejected (12 minimum).
@@ -685,25 +693,35 @@ Set the policy
 1. Open Active Directory Users and Computers.
 2. Right-click mydomain.com, then New, then Organizational Unit, and name it Groups.
 3. Repeat to create IT, HR, and Sales, each directly under mydomain.com.
-   
+
+<img width="400" height="886" alt="image" src="https://github.com/user-attachments/assets/50756060-e241-4841-bb95-3c5cdc2368da" />
+
 **Step 2: Create the security groups (inside the Groups OU)**
 1. Right-click the Groups OU, then New, then Group.
 2. Group name: HR-Staff. Group scope: Global. Group type: Security. Click OK.
 3. Repeat for IT-Staff and Sales-Staff.
-	
+
+<img width="1502" height="1054" alt="image" src="https://github.com/user-attachments/assets/bc330ccf-cf84-4ed0-a52c-5a06f087f036" />
+
 **Step 3: Move users into the department OUs**
 1. Click the _USERS OU.
 2. Select users. Use Ctrl+click for individual users or Shift+click for a range.
 3. Right-click the selection, click Move, and pick the department OU (e.g. HR).
 4. Repeat for a few users going to IT and Sales.
-	
+
+<img width="1590" height="1116" alt="image" src="https://github.com/user-attachments/assets/d3f8812a-1db9-4b63-8976-3ebfb2307272" />
+<img width="1518" height="1074" alt="image" src="https://github.com/user-attachments/assets/3eba7102-5bbb-4b26-9453-2e7b2b3b0bef" />
+<img width="1502" height="1072" alt="image" src="https://github.com/user-attachments/assets/67785cb0-3324-4146-8e0e-c4701d74af20" />
+
 **Step 4: Add the users to the matching group**
 1. Open a department OU (e.g. HR) and select the users you moved there.
 2. Right-click the selection, click Add to a group, and type HR-Staff.
 3. Click Check Names, then OK.
 4. Repeat for IT with IT-Staff and Sales with Sales-Staff.
 5. To add one at a time instead: double-click the group, open the Members tab, click Add, type the username, click Check Names, OK, then Apply.
-	
+
+<img width="1584" height="1092" alt="image" src="https://github.com/user-attachments/assets/73dbf3c5-3cf9-4f1e-a73d-a5199c74f95d" />
+
 ## EXTRAS you can try
 
 **Reset a password**
