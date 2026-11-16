@@ -27,7 +27,7 @@ This project documents the full build **and** the architecture-specific problems
 Some more admin and security upgrades
 - [Part 1: GPO password policy and account lockout](#Part-1:-GPO-password-policy-and-account-lockout)
 - [Part 2: User and group administration](#Part-2:-User-and-group-administration)
-
+- [EXTRAS you can try](#EXTRAS-you-can-try)
 
 ## 🎯 Objective
 
@@ -627,13 +627,13 @@ Hey, this is the end of the build — here's what you can do with it now:
 - Intentionally break something (DNS, a GPO, DHCP) and practice fixing it, since troubleshooting a live AD environment is its own skill
 
 
-Part 1: GPO (password policy and account lockout)
+## Part 1: GPO (password policy and account lockout)
 Set the policy
-	1. On the DC, open Server Manager, then Tools, then Group Policy Management.
-	2. Expand Forest: mydomain.com, then Domains, then mydomain.com.
-	3. Right-click Default Domain Policy and click Edit.
-	4. Go to Computer Configuration, then Policies, Windows Settings, Security Settings, Account Policies.
-	5. Click Password Policy and double-click each setting to define it: 
+1. On the DC, open Server Manager, then Tools, then Group Policy Management.
+2. Expand Forest: mydomain.com, then Domains, then mydomain.com.
+3. Right-click Default Domain Policy and click Edit.
+4. Go to Computer Configuration, then Policies, Windows Settings, Security Settings, Account Policies.
+5. Click Password Policy and double-click each setting to define it: 
 		○ Enforce password history: 24
 		○ Maximum password age: 90 days
 		○ Minimum password age: 1 day
@@ -664,7 +664,7 @@ Things to expect
 	• Password1 is 9 characters, so resetting any account to it will now be rejected (12 minimum).
 	• Existing script accounts keep Password1 until a reset, and “never expires” means the 90-day max age doesn’t apply to them.
 
-Part 2: User and group administration
+## Part 2: User and group administration
 Step 1: Build the OU structure
 	1. Open Active Directory Users and Computers.
 	2. Right-click mydomain.com, then New, then Organizational Unit, and name it Groups.
@@ -685,7 +685,7 @@ Step 4: Add the users to the matching group
 	4. Repeat for IT with IT-Staff and Sales with Sales-Staff.
 	5. To add one at a time instead: double-click the group, open the Members tab, click Add, type the username, click Check Names, OK, then Apply.
 	
-EXTRAS you can try :}
+## EXTRAS you can try
 Reset a password
 	1. Right-click the user and click Reset Password.
 	2. Enter a new password that meets the policy (12+ characters, complex).
@@ -701,9 +701,7 @@ Delegate password resets (optional)
 	1. Right-click an OU (e.g. Sales) and click Delegate Control, then Next.
 	2. Click Add, enter IT-Staff, and click Next.
 	3. Check Reset user passwords and force password change at next logon, click Next, then Finish.
-Members of IT-Staff can now reset passwords for users in that OU without being Domain Admins.<img width="1288" height="2908" alt="image" src="https://github.com/user-attachments/assets/aa337fee-0583-4046-bac8-3eea1a0aab28" />
-
-
+- 	Members of IT-Staff can now reset passwords for users in that OU without being Domain Admins.
 
 
 
