@@ -669,42 +669,49 @@ Set the policy
 - Existing script accounts keep Password1 until a reset, and “never expires” means the 90-day max age doesn’t apply to them.
 
 ## Part 2: User and group administration
-Step 1: Build the OU structure
-	1. Open Active Directory Users and Computers.
-	2. Right-click mydomain.com, then New, then Organizational Unit, and name it Groups.
-	3. Repeat to create IT, HR, and Sales, each directly under mydomain.com.
-Step 2: Create the security groups (inside the Groups OU)
-	1. Right-click the Groups OU, then New, then Group.
-	2. Group name: HR-Staff. Group scope: Global. Group type: Security. Click OK.
-	3. Repeat for IT-Staff and Sales-Staff.
-Step 3: Move users into the department OUs
-	1. Click the _USERS OU.
-	2. Select users. Use Ctrl+click for individual users or Shift+click for a range.
-	3. Right-click the selection, click Move, and pick the department OU (e.g. HR).
-	4. Repeat for a few users going to IT and Sales.
-Step 4: Add the users to the matching group
-	1. Open a department OU (e.g. HR) and select the users you moved there.
-	2. Right-click the selection, click Add to a group, and type HR-Staff.
-	3. Click Check Names, then OK.
-	4. Repeat for IT with IT-Staff and Sales with Sales-Staff.
-	5. To add one at a time instead: double-click the group, open the Members tab, click Add, type the username, click Check Names, OK, then Apply.
+
+**Step 1: Build the OU structure**
+1. Open Active Directory Users and Computers.
+2. Right-click mydomain.com, then New, then Organizational Unit, and name it Groups.
+3. Repeat to create IT, HR, and Sales, each directly under mydomain.com.
+   
+**Step 2: Create the security groups (inside the Groups OU)**
+1. Right-click the Groups OU, then New, then Group.
+2. Group name: HR-Staff. Group scope: Global. Group type: Security. Click OK.
+3. Repeat for IT-Staff and Sales-Staff.
+	
+**Step 3: Move users into the department OUs**
+1. Click the _USERS OU.
+2. Select users. Use Ctrl+click for individual users or Shift+click for a range.
+3. Right-click the selection, click Move, and pick the department OU (e.g. HR).
+4. Repeat for a few users going to IT and Sales.
+	
+**Step 4: Add the users to the matching group**
+1. Open a department OU (e.g. HR) and select the users you moved there.
+2. Right-click the selection, click Add to a group, and type HR-Staff.
+3. Click Check Names, then OK.
+4. Repeat for IT with IT-Staff and Sales with Sales-Staff.
+5. To add one at a time instead: double-click the group, open the Members tab, click Add, type the username, click Check Names, OK, then Apply.
 	
 ## EXTRAS you can try
-Reset a password
-	1. Right-click the user and click Reset Password.
-	2. Enter a new password that meets the policy (12+ characters, complex).
-	3. Check User must change password at next logon and click OK.
-	4. PowerShell version: Set-ADAccountPassword -Identity jsmith -Reset -NewPassword (Read-Host -AsSecureString), then Set-ADUser -Identity jsmith -ChangePasswordAtLogon $true.
-	5. Test by logging into Client1 as that user and confirming it forces a password change.
-Disable and enable an account
-	1. Right-click the user and click Disable Account. The icon gets a down arrow.
-	2. Try signing in on Client1 and confirm it’s refused.
-	3. Right-click the user and click Enable Account.
-	4. PowerShell version: Disable-ADAccount -Identity jsmith, then Enable-ADAccount -Identity jsmith.
-Delegate password resets (optional)
-	1. Right-click an OU (e.g. Sales) and click Delegate Control, then Next.
-	2. Click Add, enter IT-Staff, and click Next.
-	3. Check Reset user passwords and force password change at next logon, click Next, then Finish.
+
+**Reset a password**
+1. Right-click the user and click Reset Password.
+2. Enter a new password that meets the policy (12+ characters, complex).
+3. Check User must change password at next logon and click OK.
+4. PowerShell version: Set-ADAccountPassword -Identity jsmith -Reset -NewPassword (Read-Host -AsSecureString), then Set-ADUser -Identity jsmith -ChangePasswordAtLogon $true.
+5. Test by logging into Client1 as that user and confirming it forces a password change.
+   
+**Disable and enable an account**
+1. Right-click the user and click Disable Account. The icon gets a down arrow.
+2. Try signing in on Client1 and confirm it’s refused.
+3. Right-click the user and click Enable Account.
+4. PowerShell version: Disable-ADAccount -Identity jsmith, then Enable-ADAccount -Identity jsmith.
+	
+**Delegate password resets (optional)**
+1. Right-click an OU (e.g. Sales) and click Delegate Control, then Next.
+2. Click Add, enter IT-Staff, and click Next.
+3. Check Reset user passwords and force password change at next logon, click Next, then Finish.
 - 	Members of IT-Staff can now reset passwords for users in that OU without being Domain Admins.
 
 
