@@ -24,6 +24,11 @@ This project documents the full build **and** the architecture-specific problems
 - [Notes & Known Issues](#notes--known-issues)
 - [What You Can Do With This Lab](#what-you-can-do-with-this-lab)
 
+Some more admin and security upgrades
+- [Part 1: GPO password policy and account lockout](#Part-1:-GPO-password-policy-and-account-lockout)
+- [Part 2: User and group administration](#Part-2:-User-and-group-administration)
+
+
 ## 🎯 Objective
 
 Simulate a small enterprise Active Directory environment end-to-end, on hardware it wasn't designed to run on:
@@ -622,6 +627,81 @@ Hey, this is the end of the build — here's what you can do with it now:
 - Intentionally break something (DNS, a GPO, DHCP) and practice fixing it, since troubleshooting a live AD environment is its own skill
 
 
+Part 1: GPO (password policy and account lockout)
+Set the policy
+	1. On the DC, open Server Manager, then Tools, then Group Policy Management.
+	2. Expand Forest: mydomain.com, then Domains, then mydomain.com.
+	3. Right-click Default Domain Policy and click Edit.
+	4. Go to Computer Configuration, then Policies, Windows Settings, Security Settings, Account Policies.
+	5. Click Password Policy and double-click each setting to define it: 
+		○ Enforce password history: 24
+		○ Maximum password age: 90 days
+		○ Minimum password age: 1 day
+		○ Minimum password length: 12
+		○ Password must meet complexity requirements: Enabled
+	6. Click Account Lockout Policy: 
+		○ Account lockout threshold: 5 invalid attempts (set this first)
+		○ A popup will suggest values for the other two. Click OK, or change both to 15 minutes.
+		○ Account lockout duration: 15 minutes
+		○ Reset account lockout counter after: 15 minutes
+	7. Close the editor.
+Apply it
+	1. On the DC, open PowerShell and run gpupdate /force.
+	2. Then run Get-ADDefaultDomainPasswordPolicy and confirm the values match what you set.
+Check it from Client1
+	1. Open Command Prompt on Client1.
+	2. Run gpupdate /force.
+	3. Run net accounts /domain and confirm it shows the same policy.
+Test the lockout
+	1. On the Client1 sign-in screen, click Other User.
+	2. Enter MYDOMAIN\jsmith (or any generated user) with the wrong password 5 times.
+	3. Enter the correct password (Password1). It should say the account is locked.
+	4. On the DC, open Active Directory Users and Computers.
+	5. Double-click the user, go to the Account tab, check Unlock account, and click OK. 
+		○ PowerShell version: Unlock-ADAccount -Identity jsmith
+	6. Optional: on the DC, open Event Viewer, then Windows Logs, then Security, and look for Event ID 4740 (account lockout).
+Things to expect
+	• Password1 is 9 characters, so resetting any account to it will now be rejected (12 minimum).
+	• Existing script accounts keep Password1 until a reset, and “never expires” means the 90-day max age doesn’t apply to them.
+
+Part 2: User and group administration
+Step 1: Build the OU structure
+	1. Open Active Directory Users and Computers.
+	2. Right-click mydomain.com, then New, then Organizational Unit, and name it Groups.
+	3. Repeat to create IT, HR, and Sales, each directly under mydomain.com.
+Step 2: Create the security groups (inside the Groups OU)
+	1. Right-click the Groups OU, then New, then Group.
+	2. Group name: HR-Staff. Group scope: Global. Group type: Security. Click OK.
+	3. Repeat for IT-Staff and Sales-Staff.
+Step 3: Move users into the department OUs
+	1. Click the _USERS OU.
+	2. Select users. Use Ctrl+click for individual users or Shift+click for a range.
+	3. Right-click the selection, click Move, and pick the department OU (e.g. HR).
+	4. Repeat for a few users going to IT and Sales.
+Step 4: Add the users to the matching group
+	1. Open a department OU (e.g. HR) and select the users you moved there.
+	2. Right-click the selection, click Add to a group, and type HR-Staff.
+	3. Click Check Names, then OK.
+	4. Repeat for IT with IT-Staff and Sales with Sales-Staff.
+	5. To add one at a time instead: double-click the group, open the Members tab, click Add, type the username, click Check Names, OK, then Apply.
+	
+EXTRAS you can try :}
+Reset a password
+	1. Right-click the user and click Reset Password.
+	2. Enter a new password that meets the policy (12+ characters, complex).
+	3. Check User must change password at next logon and click OK.
+	4. PowerShell version: Set-ADAccountPassword -Identity jsmith -Reset -NewPassword (Read-Host -AsSecureString), then Set-ADUser -Identity jsmith -ChangePasswordAtLogon $true.
+	5. Test by logging into Client1 as that user and confirming it forces a password change.
+Disable and enable an account
+	1. Right-click the user and click Disable Account. The icon gets a down arrow.
+	2. Try signing in on Client1 and confirm it’s refused.
+	3. Right-click the user and click Enable Account.
+	4. PowerShell version: Disable-ADAccount -Identity jsmith, then Enable-ADAccount -Identity jsmith.
+Delegate password resets (optional)
+	1. Right-click an OU (e.g. Sales) and click Delegate Control, then Next.
+	2. Click Add, enter IT-Staff, and click Next.
+	3. Check Reset user passwords and force password change at next logon, click Next, then Finish.
+Members of IT-Staff can now reset passwords for users in that OU without being Domain Admins.<img width="1288" height="2908" alt="image" src="https://github.com/user-attachments/assets/aa337fee-0583-4046-bac8-3eea1a0aab28" />
 
 
 
