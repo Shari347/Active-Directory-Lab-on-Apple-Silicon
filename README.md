@@ -665,8 +665,8 @@ Set the policy
 6. Optional: on the DC, open Event Viewer, then Windows Logs, then Security, and look for Event ID 4740 (account lockout).
    
 **Things to expect**
-• Password1 is 9 characters, so resetting any account to it will now be rejected (12 minimum).
-• Existing script accounts keep Password1 until a reset, and “never expires” means the 90-day max age doesn’t apply to them.
+- Password1 is 9 characters, so resetting any account to it will now be rejected (12 minimum).
+- Existing script accounts keep Password1 until a reset, and “never expires” means the 90-day max age doesn’t apply to them.
 
 ## Part 2: User and group administration
 Step 1: Build the OU structure
